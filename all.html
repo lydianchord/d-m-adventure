@@ -50,25 +50,25 @@
         <div class="col-md-3">
           <h3>D-M Adventure</h3>
           <p>This is a ridiculous text-based game that I made to amuse my friends. The game also has non-text-based portions. Avoid death and try to get to the ending.</p>
-          <p><a href="index.html" class="btn btn-md btn-primary">Play</a></p>
+          <p><a href="index.html" class="btn btn-md btn-primary" data-toggle="tooltip" data-placement="right" title="Restarting is fun!">Play</a></p>
           <br>
         </div>
         <div class="col-md-3">
           <h3>Danmaku Interwebs</h3>
           <p>This is a bullet hell game (2D shooter with lots of bullets) that I spent many precious hours coding. It was originally part of D-M Adventure but is equally <strike>infuriating</strike> fun on its own. Please be persistent and don't give up after being killed a few <small>(dozen)</small> times.</p>
-          <p><a href="danmaku.html" class="btn btn-md btn-primary">Play</a></p>
+          <p><a href="danmaku.html" class="btn btn-md btn-primary" data-toggle="tooltip" data-placement="right" title="Small hitboxes are great, huh?">Play</a></p>
           <br>
         </div>
         <div class="col-md-3">
           <h3>Rock-Paper-Scissors Coup</h3>
           <p>This is a simple game that I made slightly less random. It's marginally related to the previous two games.</p>
-          <p><a href="rps.html" class="btn btn-md btn-primary">Play</a></p>
+          <p><a href="rps.html" class="btn btn-md btn-primary" data-toggle="tooltip" data-placement="right" title="Agh, stop switching, computer!">Play</a></p>
           <br>
         </div>
         <div class="col-md-3">
           <h3>Blah</h3>
           <p>Lorem ipsum</p>
-          <p><a href="" class="btn btn-md btn-primary">Play</a></p>
+          <p><a href="" class="btn btn-md btn-primary" data-toggle="tooltip" data-placement="right" title="Nothing exists here yet...">Play</a></p>
           <br>
         </div>
       </div>
@@ -93,7 +93,12 @@
         <p>If you have any comments, questions, or suggestions, <a href="about.html">click here</a> to share them.</p>
       </footer>
     </div>
+    <script src="jquery-1.11.2.min.js"></script>
+    <script src="bootstrap.min.js"></script>
     <script>
+      $(function () {
+        $("[data-toggle='tooltip']").tooltip();
+      });
       (function() {
         var cx = '005941409925897679272:mcp6alaubra';
         var gcse = document.createElement('script');
@@ -105,7 +110,5 @@
         s.parentNode.insertBefore(gcse, s);
       })();
     </script>
-    <script src="jquery-1.11.2.min.js"></script>
-    <script src="bootstrap.min.js"></script>
   </body>
 </html>
