@@ -1,25 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>D-M Adventure</title>
-    <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="main.css">
-    
-    
-  </head>
-  <body>
-    <header>
-      <ul id="topbar">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="canvasgame.html">Skip to the Fun Part</a></li>
-        <li><a href="pocketknife.html">Provoke the Deities</a></li>
-        <li><a href="about.html">About</a></li>
-      </ul>
-      <hr>
-    </header>
-    
+{% extends "_main.html" %}
+{% block content %}
     <br>
 <!-- Sure, you could use the page source to find out where to go next and skip the game, but would that really be fun? -->
     <p id="bossdied" style="display: none"><a class="middle" href="4internetcont.html">Oh, hey, you beat the boss at least once! Click here to continue.</a></p>
@@ -34,6 +14,4 @@
     </form>
     <p><a class="middle" href="javascript: window.history.back()">Dear lord, make it end.</a></p>
     <script type="text/javascript" src="game1.js"></script>
-
-  </body>
-</html>
+{% endblock %}

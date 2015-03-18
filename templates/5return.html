@@ -1,25 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>D-M Adventure</title>
-    <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="main.css">
-    
-    
-  </head>
-  <body>
-    <header>
-      <ul id="topbar">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="canvasgame.html">Skip to the Fun Part</a></li>
-        <li><a href="pocketknife.html">Provoke the Deities</a></li>
-        <li><a href="about.html">About</a></li>
-      </ul>
-      <hr>
-    </header>
-    
+{% extends "_main.html" %}
+{% block content %}
     <h2>Computer Lab</h2>
     <p>You return to the computer lab. Clara enters the room and informs you that after <u>Katie, the Deity of Democracy</u>, instigated a <a target="_blank" href="rps.html">coup</a> in Matt's one-party state, she managed to defeat Matt by throwing a wildly dancing Kenny at him while <u>Kevin, the Deity of Freaky Magic</u>, distracted him with a card trick. You win! Yay!</p>
     <ul>
@@ -27,6 +7,4 @@
       <li><a href="index.html">I want to escape reality by reliving this experience over and over again.</a></li>
       <li><a target="_blank" href="https://www.youtube.com/watch?v=p9KAYpqFIyo">I have the sudden urge to wave my pocketknife around to celebrate my victory.</a></li>
     </ul>
-
-  </body>
-</html>
+{% endblock %}
