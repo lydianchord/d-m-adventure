@@ -5,7 +5,11 @@ env = Environment(loader=FileSystemLoader(searchpath='templates'))
 
 def render_template(template_name):
     template = env.get_template(template_name)
-    pair = (template_name, template.render())
+    if template_name in ('canvasgame.html', 'danmaku.html', '4internet.html', 'rps.html'):
+        game_body_id = ' id="gamebody"'
+    else:
+        game_body_id = ''
+    pair = (template_name, template.render(game_body_id=game_body_id))
     return pair
 
 def to_files(rendered_list):
@@ -15,5 +19,8 @@ def to_files(rendered_list):
 
 if __name__ == '__main__':
     templates = os.listdir('templates/')
-    rendered_templates = [render_template(template) for template in templates]
+    rendered_templates = [
+        render_template(template) for template in templates
+        if not template.startswith('_')
+    ]
     to_files(rendered_templates)
