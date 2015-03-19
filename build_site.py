@@ -4,7 +4,7 @@ from jinja2 import Environment, FileSystemLoader
 env = Environment(loader=FileSystemLoader(searchpath='templates'))
 
 game_pages = set((
-    'canvasgame.html', 'danmaku.html', '4internet.html', 'rps.html'
+    '4internet.html', 'canvasgame.html', 'danmaku.html', 'rps.html'
 ))
 
 def render_template(template_name):
@@ -13,8 +13,7 @@ def render_template(template_name):
         game_body_id = ' id="gamebody"'
     else:
         game_body_id = ''
-    pair = (template_name, template.render(game_body_id=game_body_id))
-    return pair
+    return template_name, template.render(game_body_id=game_body_id)
 
 def to_files(rendered_list):
     for name, text in rendered_list:
