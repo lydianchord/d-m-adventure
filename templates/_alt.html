@@ -16,7 +16,7 @@
     {% block extra_css %}
     {% endblock %}
   </head>
-  <body{{ game_body_id }}>
+  <body{% block game_body_id %}{% endblock %}>
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">

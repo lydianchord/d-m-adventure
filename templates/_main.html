@@ -9,7 +9,7 @@
     {% block redirect %}
     {% endblock %}
   </head>
-  <body{{ game_body_id }}>
+  <body{% block game_body_id %}{% endblock %}>
     <header>
       <ul id="topbar">
         <li><a href="index.html">Home</a></li>
