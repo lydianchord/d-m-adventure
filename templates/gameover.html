@@ -8,5 +8,28 @@
       <li><a target="_blank" href="https://www.youtube.com/watch?v=FhZx0fJUcZE">No. Time to go do something more relaxing.</a></li>
       <li><a target="_blank" href="https://github.com/ahuanguchi/d-m-adventure">Show me how this stupid website was made.</a></li>
       <li><a href="javascript: window.history.back()">I'm gonna be a poor sport and go back a page.</a></li>
+      <li><a href="javascript: void(0)" onclick="repeat()">This is ridiculous.</a></li>
     </ul>
+    <script>
+      var extraContent, extraDiv;
+      var req = new XMLHttpRequest();
+      req.onload = function () {
+        extraContent = this.responseText;
+        makeDiv();
+      };
+      function makeDiv() {
+        extraDiv = document.createElement("div");
+        extraDiv.innerHTML = extraContent;
+        document.body.appendChild(extraDiv);
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+      function repeat() {
+        if (!extraDiv) {
+          req.open("GET", "gameover.html");
+          req.send();
+        } else {
+          makeDiv();
+        }
+      }
+    </script>
 {% endblock %}
