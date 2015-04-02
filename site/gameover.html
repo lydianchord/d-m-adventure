@@ -32,7 +32,7 @@
       <li><a href="javascript: void(0)" onclick="repeat()">This is ridiculous.</a></li>
     </ul>
     <script>
-      var extraContent, extraDiv;
+      var extraContent;
       var repetitions = 0;
       var req = new XMLHttpRequest();
       req.onload = function () {
@@ -41,13 +41,17 @@
       };
       function makeDiv() {
         repetitions += 1;
-        extraDiv = document.createElement("div");
+        var extraDiv = document.createElement("div");
         extraDiv.innerHTML = extraContent;
         if (repetitions % 2 === 1) {
           extraDiv.style.color = "#f00";
         }
         document.body.appendChild(extraDiv);
-        window.scrollTo(0, document.body.scrollHeight);
+        if (repetitions % 3 !== 0) {
+          window.scrollTo(0, document.body.scrollHeight);
+        } else {
+          window.scrollTo(0, 0);
+        }
       }
       function repeat() {
         if (!extraContent) {
