@@ -1,0 +1,9 @@
+{% extends "_main.html" %}
+{% block game_body_id %} id="gamebody"{% endblock %}
+{% block content %}
+    <h1>KeyboardSynth</h1>
+    <p>Press keys on the rows that begin with Z and Q to play notes (both begin on the pitch C). Accidentals are on the rows immediately above. Press + and - to change octaves. Hold \ to toggle octaves mid-note. Move your mouse to control the volume (right is louder). Use the arrow keys and shift to pick a waveform (p5.sound's implementation of pulse wave oscillators is buggy, so shift may not work as expected).</p>
+    <script language="javascript" src="p5.min.js"></script>
+    <script language="javascript" src="p5.sound.min.js"></script>
+    <script language="javascript" src="keyboardsynth.js"></script>
+{% endblock %}
