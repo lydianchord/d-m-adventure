@@ -3,6 +3,8 @@ var note;
 var frequency;
 var volume;
 var noteWidth;
+var recorder;
+var soundFile;
 
 var waveMap = {};
 
@@ -53,6 +55,9 @@ function draw() {
   stroke(255); // instead of fill
   text("Note #: " + note, 10, 20);
   text("Hz: " + frequency, 10, 40);
+  if (recording) {
+    text("RECORDING", 10, 60);
+  }
 }
 
 function mouseReleased() {
@@ -76,6 +81,18 @@ function keyReleased() {
     break;
   case 'Q':
     quantize = !quantize;
+    break;
+  case 'R':
+    if (!recording) {
+      recorder = new p5.SoundRecorder();
+      soundFile = new p5.SoundFile();
+      recorder.record(soundFile);
+      recording = true;
+    } else {
+      recorder.stop();
+      save(soundFile, 'output.wav');
+      recording = false;
+    }
     break;
   default:
     var WaveType = waveMap[key];
