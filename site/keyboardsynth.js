@@ -52,7 +52,6 @@ var normalOctave = true;
 function setup() {
   createCanvas(512, 200);
   cursor(CROSS);
-  strokeWeight(1);
   noFill();
   bgColor = floor(map(currentAmp, 0, 1, 0, 64));
   
@@ -62,7 +61,7 @@ function setup() {
   waveMap[UP_ARROW] = new p5.SqrOsc();
   waveMap[SHIFT] = new p5.Pulse();
   
-  wave = waveMap[DOWN_ARROW];
+  wave = waveMap[UP_ARROW];
   wave.amp(0);
   wave.start();
   fft = new p5.FFT();

@@ -10,8 +10,8 @@ var waveMap = {};
 
 var numNotes = 88;
 var maxNote = numNotes + 1;
-var quantize = true;
-var active = false;
+var quantize = false;
+var inactive = true;
 var octave = false;
 var recording = false;
 var light = 95;
@@ -27,7 +27,7 @@ function setup() {
   waveMap['4'] = new p5.SqrOsc();
   waveMap['5'] = new p5.Pulse();
   
-  wave = waveMap['2'];
+  wave = waveMap['4'];
   wave.amp(0);
   wave.start();
   noteWidth = width / numNotes;
@@ -45,9 +45,12 @@ function draw() {
       note += 12.0;
     }
     frequency = pow(2.0, (note - 49.0) / 12.0) * 440.0;
-    wave.freq(frequency, quantize ? 0 : 0.015);
+    wave.freq(frequency, quantize || inactive ? 0 : 0.015);
     volume = constrain(map(mouseY, 0.0, height, 1.0, 0.0), 0.0, 1.0);
     wave.amp(volume, 0.01);
+    if (inactive) {
+      inactive = false;
+    }
   }
   for (i = 0; i < numNotes; i += 1) {
     fill(stripes[i % 12]);
@@ -63,6 +66,7 @@ function draw() {
 
 function mouseReleased() {
   wave.amp(0.0);
+  inactive = true;
 }
 
 function keyPressed() {
@@ -101,10 +105,10 @@ function keyReleased() {
       wave.stop();
       wave = WaveType;
       wave.freq(frequency);
-      if (active) {
-        wave.amp(volume);
-      } else {
+      if (inactive) {
         wave.amp(0);
+      } else {
+        wave.amp(volume);
       }
       wave.start();
     }
