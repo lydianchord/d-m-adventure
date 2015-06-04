@@ -9,6 +9,7 @@ var soundFile;
 var waveMap = {};
 
 var numNotes = 88;
+var maxNote = numNotes + 1;
 var quantize = true;
 var active = false;
 var octave = false;
@@ -36,7 +37,7 @@ function draw() {
   var i;
   stroke(159, 0, 0);
   if (mouseIsPressed) {
-    note = map(mouseX, 0.0, width, 1.0, numNotes + 1.0);
+    note = constrain(map(mouseX, 0.0, width, 1.0, maxNote), 1.0, numNotes);
     if (quantize) {
       note = floor(note);
     }
@@ -45,7 +46,7 @@ function draw() {
     }
     frequency = pow(2.0, (note - 49.0) / 12.0) * 440.0;
     wave.freq(frequency, quantize ? 0 : 0.015);
-    volume = map(mouseY, 0.0, height, 1.0, 0.0)
+    volume = constrain(map(mouseY, 0.0, height, 1.0, 0.0), 0.0, 1.0);
     wave.amp(volume, 0.01);
   }
   for (i = 0; i < numNotes; i += 1) {
