@@ -69,7 +69,6 @@ var gameState = {
 
 // angle as side for player bullets
 function Bullet(speed, x, y, angle) {
-  var ctx = context;
   var gc = gameCanvas;
   this.rightLim = gc.width;
   this.bottomLim = gc.height;
@@ -98,28 +97,25 @@ function Bullet(speed, x, y, angle) {
     this.centerY = this.y + 5;
     this.img = gameState.enemyBulletImg;
   }
-  
-  this.inBounds = function () {
-    return (this.x >= -10 && this.x <= this.rightLim &&
-            this.y >= -10 && this.y <= this.bottomLim);
-  };
-  
-  this.draw = function () {
-    ctx.drawImage(this.img, this.x, this.y);
-  };
-  
-  this.update = function () {
-    if (this.speed < 0) {
-      this.xVelocity = this.side * 5 * Math.cos(45 * this.age * Math.PI / 180);
-      this.age += 1;
-    }
-    this.x += this.xVelocity;
-    this.y += this.yVelocity;
-    this.centerX += this.xVelocity;
-    this.centerY += this.yVelocity;
-    this.active = this.active && this.inBounds();
-  };
 }
+Bullet.prototype.inBounds = function () {
+  return (this.x >= -10 && this.x <= this.rightLim &&
+          this.y >= -10 && this.y <= this.bottomLim);
+};
+Bullet.prototype.draw = function () {
+  context.drawImage(this.img, this.x, this.y);
+};
+Bullet.prototype.update = function () {
+  if (this.speed < 0) {
+    this.xVelocity = this.side * 5 * Math.cos(45 * this.age * Math.PI / 180);
+    this.age += 1;
+  }
+  this.x += this.xVelocity;
+  this.y += this.yVelocity;
+  this.centerX += this.xVelocity;
+  this.centerY += this.yVelocity;
+  this.active = this.active && this.inBounds();
+};
 
 var player = {
   score: 0,
@@ -245,129 +241,126 @@ function Enemy(isBoss) {
   this.width = this.img.width;
   this.height = this.img.height;
   this.health = this.maxHealth;
-  
-  this.inBounds = function () {
-    return (this.x >= -this.width && this.x <= this.rightLim &&
-            this.y >= -this.height && this.y <= this.bottomLim);
-  };
-  
-  this.draw = function () {
-    if (!this.dying) {
-      ctx.drawImage(this.img, this.x, this.y);
-    } else {
-      ctx.drawImage(this.img, this.x + this.width * this.deathAge * 0.125, this.y + this.height * this.deathAge * 0.125,
-                    this.width * (4 - this.deathAge) * 0.25, this.height * (4 - this.deathAge) * 0.25);
-      this.deathAge += 1;
-      if (this.deathAge >= 4) {
-        this.active = false;
-        if (this.isBoss) {
-          gs.fightingBoss = false;
-          gs.enemyBullets.forEach(function (bullet) {
-            bullet.active = false;
-          });
-        }
-      }
-    }
-  };
-  
-  this.shoot = function () {
-    var pl = player;
-    var i;
-    var bulletPositionX = this.x + 0.5 * this.width - 5;
-    var bulletPositionY = this.y + this.height;
-    switch (this.name) {
-    case "rando":
-      var baseAngle = -60 + Math.random() * 115;
-      gs.enemyBullets.push(new Bullet(8 + this.difficulty, bulletPositionX, bulletPositionY, baseAngle));
-      gs.enemyBullets.push(new Bullet(8 + this.difficulty, bulletPositionX, bulletPositionY, baseAngle + 5));
-      break;
-    case "circle":
-      for (i = 0; i < 360; i += 30) {
-        gs.enemyBullets.push(new Bullet(4 + this.difficulty, bulletPositionX, bulletPositionY - 0.5 * this.height, i));
-      }
-      break;
-    case "aim":
-      var dx = pl.centerX - 1 - bulletPositionX;
-      var dy = pl.centerY - 1 - bulletPositionY;
-      gs.enemyBullets.push(new Bullet(10 + this.difficulty, bulletPositionX, bulletPositionY, -(Math.atan2(dy, dx) * 180 / Math.PI - 90)));
-      break;
-    case "boss":
-      if (this.age % 360 === 0) {
-        if (!this.berserk) {
-          this.berserk = (Math.random() < 0.5) ? true : false;
-          this.chargeFull = this.pattern === "flower" ? 20 : 10;
-        }
-        this.spin = (Math.random() < 0.5) ? this.spin : -this.spin;
-        this.pattern = (Math.random() < 0.5) ? "flower" : "cannon";
-      }
-      if (this.berserk) {
-        this.chargeTime += 1;
-        if (this.chargeTime === this.chargeFull + 10) {
-          this.berserk = false;
-          this.chargeTime = 0;
-        } else if (this.chargeTime >= this.chargeFull) {
-          for (i = 0; i < 400; i += 10) {
-            gs.enemyBullets.push(new Bullet(12 + this.difficulty - (this.chargeTime - this.chargeFull), this.x + i, bulletPositionY, 0));
-          }
-        }
-      } else if (this.pattern === "flower") {
-        var startCenterY = bulletPositionY - 0.5 * this.height - 5;
-        for (i = 0; i < 360; i += 30) {
-          gs.enemyBullets.push(new Bullet(3 + this.difficulty, bulletPositionX,
-                                       startCenterY, this.spin * ((2 * this.age) % 360) - i));
-        }
-        for (i = 0; i < 360; i += 30) {
-          gs.enemyBullets.push(new Bullet(3 + this.difficulty, bulletPositionX,
-                                       startCenterY, -this.spin * ((3 * this.age) % 360) - i));
-        }
-      } else if (this.pattern === "cannon") {
-        var tempAngle = this.spin * (4.25 * this.age % 120 - 60);
-        for (i = 110; i <= 130; i += 20) {
-          gs.enemyBullets.push(new Bullet(5 + this.difficulty, this.x + i, bulletPositionY, tempAngle));
-        }
-        for (i = 260; i <= 280; i += 20) {
-          gs.enemyBullets.push(new Bullet(5 + this.difficulty, this.x + i, bulletPositionY, -tempAngle));
-        }
-      }
-      if ((this.age % 52 === 0) || ((this.age - 4) % 52 === 0) || ((this.age - 8) % 52 === 0)) {
-        var dx1 = pl.centerX - 1 - (this.x + 50);
-        var dx2 = pl.centerX - 1 - (this.x + this.width - 50);
-        var dys = pl.centerY - 1 - (this.y + this.height);
-        gs.enemyBullets.push(new Bullet(8 + this.difficulty, this.x + 45, bulletPositionY,
-                                        (Math.atan2(dx1, dys) * 180 / Math.PI)));
-        gs.enemyBullets.push(new Bullet(8 + this.difficulty, this.x + this.width - 55, bulletPositionY,
-                                        (Math.atan2(dx2, dys) * 180 / Math.PI)));
-      }
-      break;
-    }
-  };
-  
-  this.update = function () {
-    if (this.age === 100 && this.name === "aim" && !this.dying) {
-      this.xVelocity = (Math.abs(this.xVelocity) / this.xVelocity) * this.speed;
-      this.yVelocity = 0;
-    }
-    if (this.age === 52 && this.isBoss) {
-      this.yVelocity = 0;
-      this.firing = true;
-    }
-    this.x += this.xVelocity;
-    this.y += this.yVelocity;
-
-    this.active = this.active && this.inBounds();
-    if (!this.dying && this.age % this.maxAge === 0 && this.firing) {
-      this.shoot();
-    }
-    this.age += 1;
-  };
-  
-  this.explode = function () {
-    if (!this.dying) {
-      this.dying = true;
-      this.deathAge = -2;
-    }
-  };
 }
+Enemy.prototype.inBounds = function () {
+  return (this.x >= -this.width && this.x <= this.rightLim &&
+          this.y >= -this.height && this.y <= this.bottomLim);
+};
+Enemy.prototype.draw = function () {
+  var gs = gameState;
+  if (!this.dying) {
+    context.drawImage(this.img, this.x, this.y);
+  } else {
+    context.drawImage(this.img, this.x + this.width * this.deathAge * 0.125, this.y + this.height * this.deathAge * 0.125,
+                  this.width * (4 - this.deathAge) * 0.25, this.height * (4 - this.deathAge) * 0.25);
+    this.deathAge += 1;
+    if (this.deathAge >= 4) {
+      this.active = false;
+      if (this.isBoss) {
+        gs.fightingBoss = false;
+        gs.enemyBullets.forEach(function (bullet) {
+          bullet.active = false;
+        });
+      }
+    }
+  }
+};
+Enemy.prototype.shoot = function () {
+  var gs = gameState;
+  var pl = player;
+  var i;
+  var bulletPositionX = this.x + 0.5 * this.width - 5;
+  var bulletPositionY = this.y + this.height;
+  switch (this.name) {
+  case "rando":
+    var baseAngle = -60 + Math.random() * 115;
+    gs.enemyBullets.push(new Bullet(8 + this.difficulty, bulletPositionX, bulletPositionY, baseAngle));
+    gs.enemyBullets.push(new Bullet(8 + this.difficulty, bulletPositionX, bulletPositionY, baseAngle + 5));
+    break;
+  case "circle":
+    for (i = 0; i < 360; i += 30) {
+      gs.enemyBullets.push(new Bullet(4 + this.difficulty, bulletPositionX, bulletPositionY - 0.5 * this.height, i));
+    }
+    break;
+  case "aim":
+    var dx = pl.centerX - 1 - bulletPositionX;
+    var dy = pl.centerY - 1 - bulletPositionY;
+    gs.enemyBullets.push(new Bullet(10 + this.difficulty, bulletPositionX, bulletPositionY, -(Math.atan2(dy, dx) * 180 / Math.PI - 90)));
+    break;
+  case "boss":
+    if (this.age % 360 === 0) {
+      if (!this.berserk) {
+        this.berserk = (Math.random() < 0.5) ? true : false;
+        this.chargeFull = this.pattern === "flower" ? 20 : 10;
+      }
+      this.spin = (Math.random() < 0.5) ? this.spin : -this.spin;
+      this.pattern = (Math.random() < 0.5) ? "flower" : "cannon";
+    }
+    if (this.berserk) {
+      this.chargeTime += 1;
+      if (this.chargeTime === this.chargeFull + 10) {
+        this.berserk = false;
+        this.chargeTime = 0;
+      } else if (this.chargeTime >= this.chargeFull) {
+        for (i = 0; i < 400; i += 10) {
+          gs.enemyBullets.push(new Bullet(12 + this.difficulty - (this.chargeTime - this.chargeFull), this.x + i, bulletPositionY, 0));
+        }
+      }
+    } else if (this.pattern === "flower") {
+      var startCenterY = bulletPositionY - 0.5 * this.height - 5;
+      for (i = 0; i < 360; i += 30) {
+        gs.enemyBullets.push(new Bullet(3 + this.difficulty, bulletPositionX,
+                                     startCenterY, this.spin * ((2 * this.age) % 360) - i));
+      }
+      for (i = 0; i < 360; i += 30) {
+        gs.enemyBullets.push(new Bullet(3 + this.difficulty, bulletPositionX,
+                                     startCenterY, -this.spin * ((3 * this.age) % 360) - i));
+      }
+    } else if (this.pattern === "cannon") {
+      var tempAngle = this.spin * (4.25 * this.age % 120 - 60);
+      for (i = 110; i <= 130; i += 20) {
+        gs.enemyBullets.push(new Bullet(5 + this.difficulty, this.x + i, bulletPositionY, tempAngle));
+      }
+      for (i = 260; i <= 280; i += 20) {
+        gs.enemyBullets.push(new Bullet(5 + this.difficulty, this.x + i, bulletPositionY, -tempAngle));
+      }
+    }
+    if ((this.age % 52 === 0) || ((this.age - 4) % 52 === 0) || ((this.age - 8) % 52 === 0)) {
+      var dx1 = pl.centerX - 1 - (this.x + 50);
+      var dx2 = pl.centerX - 1 - (this.x + this.width - 50);
+      var dys = pl.centerY - 1 - (this.y + this.height);
+      gs.enemyBullets.push(new Bullet(8 + this.difficulty, this.x + 45, bulletPositionY,
+                                      (Math.atan2(dx1, dys) * 180 / Math.PI)));
+      gs.enemyBullets.push(new Bullet(8 + this.difficulty, this.x + this.width - 55, bulletPositionY,
+                                      (Math.atan2(dx2, dys) * 180 / Math.PI)));
+    }
+    break;
+  }
+};
+Enemy.prototype.update = function () {
+  if (this.age === 100 && this.name === "aim" && !this.dying) {
+    this.xVelocity = (Math.abs(this.xVelocity) / this.xVelocity) * this.speed;
+    this.yVelocity = 0;
+  }
+  if (this.age === 52 && this.isBoss) {
+    this.yVelocity = 0;
+    this.firing = true;
+  }
+  this.x += this.xVelocity;
+  this.y += this.yVelocity;
+
+  this.active = this.active && this.inBounds();
+  if (!this.dying && this.age % this.maxAge === 0 && this.firing) {
+    this.shoot();
+  }
+  this.age += 1;
+};
+Enemy.prototype.explode = function () {
+  if (!this.dying) {
+    this.dying = true;
+    this.deathAge = -2;
+  }
+};
 
 gameState.handleCollisions = function () {
   var i, j;
