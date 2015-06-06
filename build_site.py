@@ -9,8 +9,20 @@ def render_template(template_name):
 
 def to_files(rendered_list):
     for name, text in rendered_list:
-        with open(os.path.join('site', name), 'w') as f:
-            f.write(text)
+        writing = False
+        destination = os.path.join('site', name)
+        if os.path.exists(destination):
+            with open(destination, 'r') as f:
+                old_text = f.read()
+            if old_text != text:
+                writing = True
+                print('Modified: ' + name)
+        else:
+            writing = True
+            print('Added: ' + name)
+        if writing:
+            with open(destination, 'w') as f:
+                f.write(text)
 
 if __name__ == '__main__':
     templates = os.listdir('templates/')
