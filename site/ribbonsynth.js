@@ -12,6 +12,7 @@ var numNotes = 88;
 var maxNote = numNotes + 1;
 var quantize = false;
 var inactive = true;
+var clickedCanvas = false;
 var octave = false;
 var recording = false;
 var light = 95;
@@ -36,7 +37,7 @@ function setup() {
 function draw() {
   var i;
   stroke(159, 0, 0);
-  if (mouseIsPressed) {
+  if (clickedCanvas) {
     note = constrain(map(mouseX, 0.0, width, 1.0, maxNote), 1.0, numNotes);
     if (quantize) {
       note = floor(note);
@@ -64,8 +65,15 @@ function draw() {
   }
 }
 
+function mousePressed() {
+  if (mouseX >= 0 && mouseX <= width && mouseY >= 0 && mouseY <= height) {
+    clickedCanvas = true;
+  }
+}
+
 function mouseReleased() {
   wave.amp(0.0);
+  clickedCanvas = false;
   inactive = true;
 }
 
