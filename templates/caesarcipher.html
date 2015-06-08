@@ -1,0 +1,62 @@
+{% extends "_main.html" %}
+{% block redirect %}
+    <style type="text/css">
+      label, input, select {
+        display: block;
+      }
+      #textinput {
+        width: 100%;
+        max-width: 400px;
+      }
+      #resultsbox {
+        width: 100%;
+        min-height: 60px;
+        max-width: 600px;
+        padding: 2px 8px;
+        background-color: #fff;
+        color: #333;
+      }
+      #app {
+        margin: 0 auto;
+        max-width: 600px;
+      }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular.min.js"></script>
+    <script src="caesarcipher.js?v=1"></script>
+{% endblock %}
+{% block content %}
+    <div ng-app="app" ng-controller="AppController as vm" id="app">
+      <h2>Caesar Cipher Encrypter/Decrypter</h2>
+      <form ng-submit="vm.convert()">
+        <label>Message:</label>
+        <input type="text" ng-model="vm.message" id="textinput">
+        <br>
+        <label>Key (for shifting letters):</label>
+        <select ng-model="vm.key">
+          <option value="brute">brute force</option>
+          {% for i in range(1, 26) %}
+            <option value="{{ i }}">{{ i }}</option>
+          {% endfor %}
+        </select>
+        <br>
+        <label>Conversion:</label>
+        <select ng-model="vm.conversion">
+          <option value="decrypt">decrypt</option>
+          <option value="encrypt">encrypt</option>
+        </select>
+        <br>
+        <br>
+        <input type="submit" value="Convert">
+      </form>
+      <br>
+      {% raw %}
+        <p>Result(s):</p>
+        <div id="resultsbox">
+          <ul>
+            <li ng-repeat="result in vm.results">{{ result }}</li>
+          </ul>
+        </div>
+      {% endraw %}
+      <p>Vocabulary based on the <a href="http://www.speech.cs.cmu.edu/cgi-bin/cmudict">CMUdict</a></p>
+    </div>
+{% endblock %}
