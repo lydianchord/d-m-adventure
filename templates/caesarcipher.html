@@ -34,7 +34,7 @@
         <label>Message:</label>
         <div class="formrow">
           <input type="text" ng-model="vm.message" ng-change="vm.convert()" id="textinput">
-          <button ng-model="vm.message" ng-click="vm.message = ''">clear</button>
+          <button ng-click="vm.message = ''">clear</button>
         </div>
         <br>
         <label>Key (for shifting letters):</label>
@@ -55,8 +55,8 @@
       {% raw %}
         <p>Result(s):</p>
         <div id="resultsbox">
-          <ul>
-            <li ng-repeat="result in vm.results track by $index" ng-if="result">{{ result }}</li>
+          <ul ng-if="vm.message">
+            <li ng-repeat="result in vm.results track by $index">{{ result }}</li>
           </ul>
         </div>
       {% endraw %}
