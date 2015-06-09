@@ -64,9 +64,9 @@ function convert(message, key, conversion) {
     maxTries = 25;
     key = 1;
   } else {
-    key = parseInt(key);
     brute = false;
     maxTries = 1;
+    key = parseInt(key, 10);
   }
   var currentTry = 0;
   var possibleMessages = [];
@@ -130,5 +130,5 @@ app.controller("AppController", function () {
   vm.results = [];
   vm.convert = function () {
     vm.results = convert(vm.message, vm.key, vm.conversion);
-  }
+  };
 });

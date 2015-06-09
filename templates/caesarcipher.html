@@ -1,6 +1,9 @@
 {% extends "_main.html" %}
 {% block redirect %}
     <style type="text/css">
+      html {
+        overflow-y: scroll;
+      }
       label, input, select {
         display: block;
       }
@@ -14,7 +17,7 @@
         max-width: 600px;
         padding: 2px 8px;
         background-color: #fff;
-        color: #333;
+        color: #000;
       }
       #app {
         margin: 0 auto;
@@ -29,10 +32,10 @@
       <h2>Caesar Cipher Encrypter/Decrypter</h2>
       <form ng-submit="vm.convert()">
         <label>Message:</label>
-        <input type="text" ng-model="vm.message" id="textinput">
+        <input type="text" ng-model="vm.message" ng-change="vm.convert()" id="textinput">
         <br>
         <label>Key (for shifting letters):</label>
-        <select ng-model="vm.key">
+        <select ng-model="vm.key" ng-change="vm.convert()">
           <option value="brute">brute force</option>
           {% for i in range(1, 26) %}
             <option value="{{ i }}">{{ i }}</option>
@@ -40,20 +43,17 @@
         </select>
         <br>
         <label>Conversion:</label>
-        <select ng-model="vm.conversion">
+        <select ng-model="vm.conversion" ng-change="vm.convert()">
           <option value="decrypt">decrypt</option>
           <option value="encrypt">encrypt</option>
         </select>
-        <br>
-        <br>
-        <input type="submit" value="Convert">
       </form>
       <br>
       {% raw %}
         <p>Result(s):</p>
         <div id="resultsbox">
           <ul>
-            <li ng-repeat="result in vm.results">{{ result }}</li>
+            <li ng-repeat="result in vm.results track by $index" ng-if="result">{{ result }}</li>
           </ul>
         </div>
       {% endraw %}
