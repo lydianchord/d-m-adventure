@@ -4,7 +4,7 @@
       html {
         overflow-y: scroll;
       }
-      label, input, select {
+      label, select, .formrow {
         display: block;
       }
       #textinput {
@@ -32,7 +32,10 @@
       <h2>Caesar Cipher Encrypter/Decrypter</h2>
       <form ng-submit="vm.convert()">
         <label>Message:</label>
-        <input type="text" ng-model="vm.message" ng-change="vm.convert()" id="textinput">
+        <div class="formrow">
+          <input type="text" ng-model="vm.message" ng-change="vm.convert()" id="textinput">
+          <button ng-model="vm.message" ng-click="vm.message = ''">clear</button>
+        </div>
         <br>
         <label>Key (for shifting letters):</label>
         <select ng-model="vm.key" ng-change="vm.convert()">
