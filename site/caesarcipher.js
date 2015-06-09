@@ -5,27 +5,7 @@ len = upperCaseStr.length;
 for (i = 0; i < len; i += 1) {
   upperCaseObj[upperCaseStr[i]] = true;
 }
-
 var wordsObj = {};
-var req = new XMLHttpRequest();
-req.open("GET", "cmudict_words.json", true);
-req.onload = function (e) {
-  if (req.readyState === 4) {
-    if (req.status === 200) {
-      var wordsArr = JSON.parse(req.responseText);
-      len = wordsArr.length;
-      for (i = 0; i < len; i += 1) {
-        wordsObj[wordsArr[i]] = true;
-      }
-    } else {
-      console.error(req.statusText);
-    }
-  }
-};
-req.onerror = function (e) {
-  console.error(req.statusText);
-};
-req.send(null);
 
 function isEnglish(text, threshold) {
   var i, len, character;
@@ -128,7 +108,7 @@ app.config(["$locationProvider", function ($locationProvider) {
     requireBase: false
   });
 }]);
-app.controller("AppController", ["$location", function ($location, $sanitize) {
+app.controller("AppController", ["$location", "$http", function ($location, $http) {
   var vm = this;
   var query = $location.search();
   vm.message = "";
@@ -142,6 +122,18 @@ app.controller("AppController", ["$location", function ($location, $sanitize) {
                    encodeURIComponent(vm.message) + "&key=" + vm.key +
                    "&conversion=" + vm.conversion;
   };
+  
+  $http.get("cmudict_words.json").success(function (data) {
+    var wordsArr = angular.fromJson(data);
+    var len = wordsArr.length;
+    for (i = 0; i < len; i += 1) {
+      wordsObj[wordsArr[i]] = true;
+    }
+    if (vm.key === "brute") {
+      vm.convert();
+    }
+  });
+  
   if (Object.keys(query).length > 0) {
     if (query.message) {
       vm.message = query.message;
