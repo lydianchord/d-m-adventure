@@ -122,13 +122,37 @@ function convert(message, key, conversion) {
 }
 
 var app = angular.module("app", []);
-app.controller("AppController", function () {
+app.config(["$locationProvider", function ($locationProvider) {
+  $locationProvider.html5Mode({
+    enabled: true,
+    requireBase: false
+  });
+}]);
+app.controller("AppController", ["$location", function ($location, $sanitize) {
   var vm = this;
+  var query = $location.search();
   vm.message = "";
   vm.key = "brute";
   vm.conversion = "decrypt";
   vm.results = [];
+  vm.permalink = window.location.href;
   vm.convert = function () {
     vm.results = convert(vm.message, vm.key, vm.conversion);
+    vm.permalink = window.location.href.split("?")[0] + "?message=" +
+                   encodeURIComponent(vm.message) + "&key=" + vm.key +
+                   "&conversion=" + vm.conversion;
   };
-});
+  if (Object.keys(query).length > 0) {
+    if (query.message) {
+      vm.message = query.message;
+    }
+    if (query.key) {
+      vm.key = query.key;
+    }
+    if (query.conversion) {
+      vm.conversion = query.conversion;
+    }
+    vm.convert();
+  }
+}]);
+// access in console: angular.element($("#app")).scope().vm

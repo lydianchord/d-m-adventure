@@ -7,7 +7,7 @@
       label, select, .formrow {
         display: block;
       }
-      #textinput {
+      .textinput {
         width: 100%;
         max-width: 400px;
       }
@@ -25,7 +25,7 @@
       }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.16/angular.min.js"></script>
-    <script src="caesarcipher.js?v=1"></script>
+    <script src="caesarcipher.js?v=2"></script>
 {% endblock %}
 {% block content %}
     <div ng-app="app" ng-controller="AppController as vm" id="app">
@@ -33,7 +33,7 @@
       <form ng-submit="vm.convert()">
         <label>Message:</label>
         <div class="formrow">
-          <input type="text" ng-model="vm.message" ng-change="vm.convert()" id="textinput">
+          <input type="text" ng-model="vm.message" ng-change="vm.convert()" class="textinput">
           <button ng-click="vm.message = ''">clear</button>
         </div>
         <br>
@@ -60,6 +60,9 @@
           </ul>
         </div>
       {% endraw %}
+      <br>
+      <label>Permalink (brute force key may not work properly):</label>
+      <input type="text" ng-model="vm.permalink" class="textinput" onclick="this.select()" readonly>
       <p>Vocabulary based on the <a href="http://www.speech.cs.cmu.edu/cgi-bin/cmudict">CMUdict</a></p>
     </div>
 {% endblock %}
