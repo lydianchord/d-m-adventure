@@ -137,7 +137,7 @@ app.controller("AppController", ["$location", "$http", "converter", function ($l
       converter.wordsObj[wordsArr[i]] = true;
     }
     if (vm.message && vm.key === "brute") {
-      vm.convert();
+      vm.update();
     }
   });
   
@@ -151,7 +151,7 @@ app.controller("AppController", ["$location", "$http", "converter", function ($l
     if (query.conversion) {
       vm.conversion = query.conversion;
     }
-    vm.convert();
+    vm.update();
   }
 }]);
 
