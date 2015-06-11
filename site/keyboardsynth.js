@@ -98,12 +98,12 @@ function keyPressed() {
     currentFreq *= 2;
     wave.freq(currentFreq);
     normalOctave = false;
-  } else if (keyCode === 0xBB) { // '='
+  } else if (keyCode === 0xBB || keyCode === 0x3D) { // '='
     octave += 1;
     if (octave > 38) {
       octave = 38;
     }
-  } else if (keyCode === 0xBD) { // '-'
+  } else if (keyCode === 0xBD || keyCode === 0xAD) { // '-'
     octave -= 1;
     if (octave < 0) {
       octave = 0;
