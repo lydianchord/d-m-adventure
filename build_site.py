@@ -1,33 +1,30 @@
 import os
+import datetime
 from jinja2 import Environment, FileSystemLoader
 
 env = Environment(loader=FileSystemLoader(searchpath='templates'))
+current_date = str(datetime.date.today())
 
 def render_template(template_name):
     template = env.get_template(template_name)
-    return template_name, template.render()
-
-def to_files(rendered_list):
-    for name, text in rendered_list:
-        writing = False
-        destination = os.path.join('site', name)
-        if os.path.exists(destination):
-            with open(destination, 'r') as f:
-                old_text = f.read()
-            if old_text != text:
-                writing = True
-                print('Modified: ' + name)
-        else:
+    text = template.render(current_date=current_date)
+    writing = False
+    destination = os.path.join('site', template_name)
+    if os.path.exists(destination):
+        with open(destination, 'r') as f:
+            old_text = f.read()
+        if old_text != text:
             writing = True
-            print('Added: ' + name)
-        if writing:
-            with open(destination, 'w') as f:
-                f.write(text)
+            print('Modified: ' + template_name)
+    else:
+        writing = True
+        print('Added: ' + template_name)
+    if writing:
+        with open(destination, 'w') as f:
+            f.write(text)
 
 if __name__ == '__main__':
     templates = os.listdir('templates/')
-    rendered_templates = [
-        render_template(template) for template in templates
-        if not template.startswith('_')
-    ]
-    to_files(rendered_templates)
+    for template in templates:
+        if template[0] != '_':
+            render_template(template)
