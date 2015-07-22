@@ -21,6 +21,7 @@ var stripes = [light, 0, light, light, 0, light, 0, light, light, 0, light, 0];
 function setup() {
   createCanvas(windowWidth < 1000 ? windowWidth : 1000, 200);
   cursor(CROSS);
+  stroke(159, 0, 0);
   
   waveMap['1'] = new p5.SinOsc();
   waveMap['2'] = new p5.TriOsc();
@@ -36,7 +37,6 @@ function setup() {
 
 function draw() {
   var i;
-  stroke(159, 0, 0);
   if (clickedCanvas) {
     note = constrain(map(mouseX, 0.0, width, 1.0, maxNote), 1.0, numNotes);
     if (quantize) {
@@ -57,7 +57,8 @@ function draw() {
     fill(stripes[i % 12]);
     rect(i * noteWidth, -1, noteWidth, height + 1);
   }
-  stroke(255); // instead of fill
+  noStroke();
+  fill(255);
   text("Note #: " + note, 10, 20);
   text("Hz: " + frequency, 10, 40);
   if (recording) {

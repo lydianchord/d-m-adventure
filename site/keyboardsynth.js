@@ -55,6 +55,7 @@ var recording = false;
 function setup() {
   createCanvas(512, 200);
   cursor(CROSS);
+  stroke(127);
   noFill();
   bgColor = floor(map(currentAmp, 0, 1, 0, 64));
   
@@ -75,7 +76,6 @@ function draw() {
   var waveform = fft.waveform();
   var len = waveform.length / 2;
   background(bgColor);
-  stroke(127);
   beginShape();
   for (i = 0; i < len; i += 1) {
     var y = map(waveform[i], -1, 1, 0, height);
@@ -83,7 +83,8 @@ function draw() {
   }
   endShape();
   
-  stroke(255);
+  noStroke();
+  fill(255);
   text("Hz: " + currentFreq, 5, 15);
   text("Octave: " + octave, 5, 30);
   if (recording) {
