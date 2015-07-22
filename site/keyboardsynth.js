@@ -3,6 +3,8 @@ var fft;
 var currentFreq;
 var currentKey;
 var bgColor;
+var recorder;
+var soundFile;
 
 var noteMap = {
   'Z': 4,
@@ -48,6 +50,7 @@ var octave = 4;
 var currentAmp = 0.6;
 var active = false;
 var normalOctave = true;
+var recording = false;
 
 function setup() {
   createCanvas(512, 200);
@@ -83,6 +86,9 @@ function draw() {
   stroke(255);
   text("Hz: " + currentFreq, 5, 15);
   text("Octave: " + octave, 5, 30);
+  if (recording) {
+    text("RECORDING", 10, height - 20);
+  }
 }
 
 function keyPressed() {
@@ -121,6 +127,17 @@ function keyReleased() {
     currentFreq /= 2;
     wave.freq(currentFreq);
     normalOctave = true;
+  } else if (key === '1') {
+    if (!recording) {
+      recorder = new p5.SoundRecorder();
+      soundFile = new p5.SoundFile();
+      recorder.record(soundFile);
+      recording = true;
+    } else {
+      recorder.stop();
+      save(soundFile, 'output.wav');
+      recording = false;
+    }
   } else {
     var WaveType = waveMap[keyCode];
     if (WaveType !== undefined) {
