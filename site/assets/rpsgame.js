@@ -16,13 +16,13 @@ var gameOver = "GAME OVER";
 var gameOverWidth = context.measureText(gameOver).width;
 
 var enemyImgARaw = new Image();
-enemyImgARaw.src = "enemyA.png";
+enemyImgARaw.src = "/assets/enemyA.png";
 var enemyImgBRaw = new Image();
-enemyImgBRaw.src = "enemyB.png";
+enemyImgBRaw.src = "/assets/enemyB.png";
 var enemyImgCRaw = new Image();
-enemyImgCRaw.src = "enemyC.png";
+enemyImgCRaw.src = "/assets/enemyC.png";
 var enemyBulletImgRaw = new Image();
-enemyBulletImgRaw.src = "enemybullet.png";
+enemyBulletImgRaw.src = "/assets/enemybullet.png";
 
 var gameState = {
   player: null,

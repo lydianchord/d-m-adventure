@@ -129,7 +129,7 @@ app.controller("AppController", ["$location", "$http", "converter", function ($l
                    "&conversion=" + vm.conversion;
   };
   
-  $http.get("cmudict_words.json").success(function (data) {
+  $http.get("/assets/cmudict_words.json").success(function (data) {
     var i;
     var wordsArr = angular.fromJson(data);
     var len = wordsArr.length;

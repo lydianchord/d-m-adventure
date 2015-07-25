@@ -55,7 +55,7 @@ function runMain() {
   }
   if (next) {
     window.alert("You climb into the Sacred Deity Vessel and begin to fly away. However, an Unholy Green Triangle Vessel rams into you, forcing you to eject. Press OK and wait for the next page to load...");
-    window.location.href = "4internetcont.html";
+    window.location.href = "/4internetcont.html";
   }
   
   if (!next) {

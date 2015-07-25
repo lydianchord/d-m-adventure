@@ -54,7 +54,7 @@ td {
   user-select: none;
 }
 #game1 {
-  background-image: url("BG.png");
+  background-image: url("/assets/BG.png");
   cursor: none;
   display: block;
   margin: 0 auto;

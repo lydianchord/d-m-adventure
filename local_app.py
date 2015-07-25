@@ -6,7 +6,7 @@ site_dir = os.path.join(app.root_path, 'site')
 
 
 @app.route('/', defaults={'resource': 'index.html'})
-@app.route('/<resource>')
+@app.route('/<path:resource>')
 def get_resource(resource):
     return send_from_directory(site_dir, resource)
 

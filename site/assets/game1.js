@@ -14,20 +14,20 @@ var gameOver = "GAME OVER";
 var gameOverWidth = context.measureText(gameOver).width;
 
 var playerImgRaw = new Image();
-playerImgRaw.src = "D-M.png";
+playerImgRaw.src = "/assets/D-M.png";
 var enemyImgRaw = new Image();
-enemyImgRaw.src = "enemyA.png";
+enemyImgRaw.src = "/assets/enemyA.png";
 var enemyImgBRaw = new Image();
-enemyImgBRaw.src = "enemyB.png";
+enemyImgBRaw.src = "/assets/enemyB.png";
 var enemyImgCRaw = new Image();
-enemyImgCRaw.src = "enemyC.png";
+enemyImgCRaw.src = "/assets/enemyC.png";
 var bossImgRaw = new Image();
-bossImgRaw.src = "boss.png";
+bossImgRaw.src = "/assets/boss.png";
 
 var playerBulletImgRaw = new Image();
-playerBulletImgRaw.src = "bullet.png";
+playerBulletImgRaw.src = "/assets/bullet.png";
 var enemyBulletImgRaw = new Image();
-enemyBulletImgRaw.src = "enemybullet.png";
+enemyBulletImgRaw.src = "/assets/enemybullet.png";
 
 var gameState = {
   playerBullets: [],

@@ -1,4 +1,5 @@
 import os
+import re
 import unittest
 from lxml import html
 
@@ -11,9 +12,9 @@ class SiteTestCase(unittest.TestCase):
         local_app.app.config['TESTING'] = True
         self.app = local_app.app.test_client()
         root = local_app.app.root_path
-        self.site_html = [x for x in os.listdir(os.path.join(root, 'templates'))
+        self.site_html = ['/' + x for x in os.listdir(os.path.join(root, 'templates'))
                           if not x.startswith('_')]
-        self.site_static = [x for x in os.listdir(os.path.join(root, 'site'))
+        self.site_assets = ['/assets/' + x for x in os.listdir(os.path.join(root, 'site/assets'))
                             if not x.startswith('_') and not x.endswith('.html')]
     
     def tearDown(self):
@@ -26,22 +27,22 @@ class SiteTestCase(unittest.TestCase):
     def test_get_html(self):
         self.assertGreater(len(self.site_html), 0)
         for f in self.site_html:
-            with self.app.get('/' + f, follow_redirects=True) as resp:
+            with self.app.get(f, follow_redirects=True) as resp:
                 self.assertEqual(resp.status_code, 200, f)
                 data = str(resp.get_data())
                 self.assertIn('<!DOCTYPE html>', data, f)
-                self.assertIn('href="about.html"', data, f)
+                self.assertIn('href="/about.html"', data, f)
     
-    def test_get_static(self):
-        self.assertGreater(len(self.site_static), 0)
-        for f in self.site_static:
-            with self.app.get('/' + f) as resp:
+    def test_get_assets(self):
+        self.assertGreater(len(self.site_assets), 0)
+        for f in self.site_assets:
+            with self.app.get(f) as resp:
                 self.assertEqual(resp.status_code, 200, f)
     
     def test_crawl_links(self):
         plain_text = {'html', 'js', 'css'}
         unvisited_html = set(self.site_html)
-        unvisited_static = set(self.site_static)
+        unvisited_assets = set(self.site_assets)
         def crawl(page):
             with self.app.get(page, follow_redirects=True) as resp:
                 self.assertEqual(resp.status_code, 200, page)
@@ -55,21 +56,22 @@ class SiteTestCase(unittest.TestCase):
                 links = []
                 for result in tree.iterlinks():
                     link = result[2].split('?', 1)[0]
-                    if link in unvisited_html or link in unvisited_static:
+                    if link in unvisited_html or link in unvisited_assets:
                         links.append(link)
                 for link in links:
                     crawl(link)
-            elif page in unvisited_static:
-                unvisited_static.remove(page)
+            elif page in unvisited_assets:
+                unvisited_assets.remove(page)
                 if data:
-                    removable = set()
-                    for resource in unvisited_static:
-                        if resource in data:
-                            removable.add(resource)
-                    unvisited_static.difference_update(removable)
-        crawl('index.html')
+                    resources = (re.findall(r'"\S+?\.png"', data)
+                                 + re.findall(r'"\S+?\.json"', data))
+                    for resource in resources:
+                        resource = resource[1:-1]
+                        if resource in self.site_assets:
+                            crawl(resource)
+        crawl('/index.html')
         self.assertEqual(len(unvisited_html), 0, unvisited_html)
-        self.assertEqual(len(unvisited_static), 0, unvisited_static)
+        self.assertEqual(len(unvisited_assets), 0, unvisited_assets)
     
     def test_not_filename(self):
         with self.app.get('/index') as resp:

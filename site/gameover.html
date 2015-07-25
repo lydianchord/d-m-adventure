@@ -5,20 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>D-M Adventure</title>
     <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="main.css?v=1">
-    <link rel="shortcut icon" href="favicon.ico?v=1">
+    <link rel="stylesheet" type="text/css" href="/assets/main.css?v=1">
+    <link rel="shortcut icon" href="/favicon.ico?v=1">
     
     
   </head>
   <body>
     <header>
       <ul id="topbar">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="canvasgame.html">Skip to the Fun Part</a></li>
-        <li><a href="pocketknife.html">Provoke the Deities</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="music.html">Music</a></li>
-        <li><a href="other.html">Other Things</a></li>
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/canvasgame.html">Skip to the Fun Part</a></li>
+        <li><a href="/pocketknife.html">Provoke the Deities</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/music.html">Music</a></li>
+        <li><a href="/other.html">Other Things</a></li>
       </ul>
       <hr>
     </header>
@@ -27,7 +27,7 @@
     <h2>Death</h2>
     <p>Something suddenly kills you. Restart?</p>
     <ul>
-      <li><a href="index.html">Yes.</a></li>
+      <li><a href="/index.html">Yes.</a></li>
       <li><a target="_blank" href="https://www.youtube.com/watch?v=FhZx0fJUcZE">No. Time to go do something more relaxing.</a></li>
       <li><a target="_blank" href="https://github.com/ahuanguchi/d-m-adventure">Show me how this stupid website was made.</a></li>
       <li><a href="javascript: window.history.back()">I'm gonna be a poor sport and go back a page.</a></li>
@@ -58,7 +58,7 @@
       }
       function repeat() {
         if (!extraContent) {
-          req.open("GET", "gameover.html");
+          req.open("GET", "/gameover.html");
           req.send();
         } else {
           makeDiv();
