@@ -2,6 +2,7 @@ import os
 import re
 
 extensions = ('html', 'js', 'css', 'json', 'png', 'ico')
+ignore = ('_', 'http', '//')
 assets_to_check = {'js', 'css'}
 templates = set(os.listdir('templates'))
 assets = set(os.listdir('site/assets'))
@@ -9,16 +10,16 @@ assets = set(os.listdir('site/assets'))
 
 def make_link(m):
     result = m.group()[1:-1]
-    if result[0] != '_' and result[:4] != 'http':
+    if all(not result.startswith(x) for x in ignore):
         resource = result.rsplit('/')[-1]
         base_resource = resource.split('?', 1)[0]
         if base_resource in templates or base_resource in assets:
-            if '.html' in resource or '.ico' in resource:
+            if '.html' in resource:
                 link = '/' + resource
             else:
                 link = '/assets/' + resource
         else:
-            link = resource
+            link = resource if '.ico' not in resource else '/' + resource
     else:
         link = result
     return '"%s"' % link
