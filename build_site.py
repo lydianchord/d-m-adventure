@@ -5,6 +5,7 @@ from jinja2 import Environment, FileSystemLoader
 env = Environment(loader=FileSystemLoader(searchpath='templates'))
 current_date = str(datetime.date.today())
 
+
 def render_template(template_name):
     template = env.get_template(template_name)
     text = template.render(current_date=current_date)
@@ -22,6 +23,7 @@ def render_template(template_name):
     if writing:
         with open(destination, 'w') as f:
             f.write(text)
+
 
 if __name__ == '__main__':
     templates = os.listdir('templates/')
