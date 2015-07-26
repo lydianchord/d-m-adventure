@@ -8,17 +8,17 @@ import local_app
 
 class SiteTestCase(unittest.TestCase):
     
+    @classmethod
+    def setUpClass(cls):
+        root = local_app.app.root_path
+        cls.site_html = ['/' + x for x in os.listdir(os.path.join(root, 'templates'))
+                          if not x.startswith('_')]
+        cls.site_assets = ['/assets/' + x for x in os.listdir(os.path.join(root, 'site', 'assets'))
+                            if not x.startswith('_') and not x.endswith('.html')]
+    
     def setUp(self):
         local_app.app.config['TESTING'] = True
         self.app = local_app.app.test_client()
-        root = local_app.app.root_path
-        self.site_html = ['/' + x for x in os.listdir(os.path.join(root, 'templates'))
-                          if not x.startswith('_')]
-        self.site_assets = ['/assets/' + x for x in os.listdir(os.path.join(root, 'site/assets'))
-                            if not x.startswith('_') and not x.endswith('.html')]
-    
-    def tearDown(self):
-        pass
     
     def test_get_index(self):
         with self.app.get('/') as resp:
