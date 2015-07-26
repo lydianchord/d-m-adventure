@@ -19,7 +19,7 @@ def make_link(m):
             else:
                 link = '/assets/' + resource
         else:
-            link = resource if '.ico' not in resource else '/' + resource
+            link = result if '.ico' not in resource else '/' + resource
     else:
         link = result
     return '"%s"' % link
