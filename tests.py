@@ -61,13 +61,13 @@ class SiteTestCase(unittest.TestCase):
                 for result in tree.iterlinks():
                     link = result[2].replace(r"\'", '')
                     base_link = link.split('?', 1)[0]
-                    if base_link not in self.site_html | self.site_assets | visited_external:
+                    if base_link not in self.site_html | self.site_assets and link not in visited_external:
                         if 'javascript:' not in link and '.ico' not in link:
-                            if '//' in link and base_link not in visited_external:
-                                visited_external.add(base_link)
+                            if '//' in link:
+                                visited_external.add(link)
                                 if link[:2] == '//':
-                                    link = 'http:' + link
-                                r = requests.get(link)
+                                    link = 'https:' + link
+                                r = requests.head(link, headers={'Connection': 'close'})
                                 self.assertEqual(r.status_code, 200, '%s -> %s' % (page, link))
                             else:
                                 bad_routes.append((page, link))
