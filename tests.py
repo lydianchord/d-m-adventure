@@ -22,10 +22,10 @@ class SiteTestCase(unittest.TestCase):
         self.app = local_app.app.test_client()
     
     def test_get_index(self):
-        with self.app.get('/') as resp:
+        with self.app.head('/') as resp:
             self.assertEqual(resp.status_code, 200)
     
-    def test_get_html_and_links(self):
+    def test_get_html(self):
         self.assertGreater(len(self.site_html), 0)
         for f in self.site_html:
             with self.app.get(f, follow_redirects=True) as resp:
@@ -38,7 +38,7 @@ class SiteTestCase(unittest.TestCase):
     def test_get_assets(self):
         self.assertGreater(len(self.site_assets), 0)
         for f in self.site_assets:
-            with self.app.get(f) as resp:
+            with self.app.head(f) as resp:
                 self.assertEqual(resp.status_code, 200, f)
     
     def test_crawl_links(self):
@@ -93,11 +93,11 @@ class SiteTestCase(unittest.TestCase):
         self.assertEqual(len(bad_routes), 0, bad_routes)
     
     def test_not_filename(self):
-        with self.app.get('/index') as resp:
+        with self.app.head('/index') as resp:
             self.assertEqual(resp.status_code, 404)
     
     def test_nonexistent_path(self):
-        with self.app.get('/site/index.html') as resp:
+        with self.app.head('/site/index.html') as resp:
             self.assertEqual(resp.status_code, 404)
 
 
