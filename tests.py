@@ -59,7 +59,7 @@ class SiteTestCase(unittest.TestCase):
                 tree = html.fromstring(data)
                 links = []
                 for result in tree.iterlinks():
-                    link = result[2].replace(r"\'", '')
+                    link = result[2]
                     base_link = link.split('?', 1)[0]
                     if base_link not in self.site_html | self.site_assets and link not in visited_external:
                         if 'javascript:' not in link and '.ico' not in link:
@@ -82,7 +82,9 @@ class SiteTestCase(unittest.TestCase):
                                  + re.findall(r'"\S+?\.json"', data))
                     for resource in resources:
                         resource = resource[1:-1]
-                        if resource in self.site_assets:
+                        if resource not in self.site_assets:
+                            bad_routes.append((page, link))
+                        elif resource in unvisited_assets:
                             crawl(resource)
         crawl('/index.html')
         # should be no unused resources and no poorly formed links
