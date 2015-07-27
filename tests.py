@@ -1,5 +1,6 @@
 import os
 import re
+import requests
 import unittest
 from lxml import html
 
@@ -11,10 +12,10 @@ class SiteTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         root = local_app.app.root_path
-        cls.site_html = ['/' + x for x in os.listdir(os.path.join(root, 'templates'))
-                          if not x.startswith('_')]
-        cls.site_assets = ['/assets/' + x for x in os.listdir(os.path.join(root, 'site', 'assets'))
-                            if not x.startswith('_') and not x.endswith('.html')]
+        cls.site_html = set('/' + x for x in os.listdir(os.path.join(root, 'templates'))
+                            if not x.startswith('_'))
+        cls.site_assets = set('/assets/' + x for x in os.listdir(os.path.join(root, 'site', 'assets'))
+                              if not x.startswith('_') and not x.endswith('.html'))
     
     def setUp(self):
         local_app.app.config['TESTING'] = True
@@ -24,14 +25,15 @@ class SiteTestCase(unittest.TestCase):
         with self.app.get('/') as resp:
             self.assertEqual(resp.status_code, 200)
     
-    def test_get_html(self):
+    def test_get_html_and_links(self):
         self.assertGreater(len(self.site_html), 0)
         for f in self.site_html:
             with self.app.get(f, follow_redirects=True) as resp:
                 self.assertEqual(resp.status_code, 200, f)
                 data = str(resp.get_data())
-                self.assertIn('<!DOCTYPE html>', data, f)
-                self.assertIn('href="/about.html"', data, f)
+            self.assertIn('<!DOCTYPE html>', data, f)
+            self.assertIn('href="/about.html"', data, f)
+            tree = html.fromstring(data)
     
     def test_get_assets(self):
         self.assertGreater(len(self.site_assets), 0)
@@ -41,8 +43,10 @@ class SiteTestCase(unittest.TestCase):
     
     def test_crawl_links(self):
         plain_text = {'html', 'js', 'css'}
-        unvisited_html = set(self.site_html)
-        unvisited_assets = set(self.site_assets)
+        unvisited_html = self.site_html.copy()
+        unvisited_assets = self.site_assets.copy()
+        visited_external = set()
+        bad_routes = []
         def crawl(page):
             with self.app.get(page, follow_redirects=True) as resp:
                 self.assertEqual(resp.status_code, 200, page)
@@ -55,9 +59,20 @@ class SiteTestCase(unittest.TestCase):
                 tree = html.fromstring(data)
                 links = []
                 for result in tree.iterlinks():
-                    link = result[2].split('?', 1)[0]
-                    if link in unvisited_html or link in unvisited_assets:
-                        links.append(link)
+                    link = result[2].replace(r"\'", '')
+                    base_link = link.split('?', 1)[0]
+                    if base_link not in self.site_html | self.site_assets | visited_external:
+                        if 'javascript:' not in link and '.ico' not in link:
+                            if '//' in link and base_link not in visited_external:
+                                visited_external.add(base_link)
+                                if link[:2] == '//':
+                                    link = 'http:' + link
+                                r = requests.get(link)
+                                self.assertEqual(r.status_code, 200, '%s -> %s' % (page, link))
+                            else:
+                                bad_routes.append((page, link))
+                    elif base_link in unvisited_html or base_link in unvisited_assets:
+                        links.append(base_link)
                 for link in links:
                     crawl(link)
             elif page in unvisited_assets:
@@ -70,8 +85,10 @@ class SiteTestCase(unittest.TestCase):
                         if resource in self.site_assets:
                             crawl(resource)
         crawl('/index.html')
+        # should be no unused resources and no poorly formed links
         self.assertEqual(len(unvisited_html), 0, unvisited_html)
         self.assertEqual(len(unvisited_assets), 0, unvisited_assets)
+        self.assertEqual(len(bad_routes), 0, bad_routes)
     
     def test_not_filename(self):
         with self.app.get('/index') as resp:
