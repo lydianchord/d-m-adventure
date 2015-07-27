@@ -39,7 +39,7 @@ for file in templates:
         f.write(text)
 for file in assets:
     file_ext = file.rsplit('.', 1)[-1]
-    if file_ext in assets_to_check and '.min.' not in file:
+    if file_ext in assets_to_check and file.count('.') == 1:
         with open('site/assets/' + file, encoding="utf-8") as f:
             text = f.read()
         text = fix_links(text)

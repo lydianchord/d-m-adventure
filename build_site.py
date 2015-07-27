@@ -22,7 +22,7 @@ def render_template(template_name):
         print('Added: ' + template_name)
     if writing:
         with open(destination, 'w', encoding="utf-8") as f:
-            f.write(text)
+            f.write(text + '\n')
 
 
 if __name__ == '__main__':

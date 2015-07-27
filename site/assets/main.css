@@ -7,33 +7,41 @@ body {
   margin-right: 10%;
   margin-top: 1%;
 }
+
 a {
   color: #0cf;
   text-decoration: none;
 }
+
 header ul {
   padding-left: 0px;
 }
+
 header li {
   display: inline-block;
   padding: 5px 10px;
   background-color: #000;
   margin-top: 5px;
 }
+
 header a {
   color: #ccc;
 }
+
 hr {
   background-color: #ccc;
   border: 0px;
   height: 1px;
 }
+
 body li {
   list-style: square;
 }
+
 table {
   border-collapse: collapse;
 }
+
 td {
   text-align: center;
   border: 1px solid #ccc;
@@ -41,10 +49,18 @@ td {
   height: 40px;
   background-color: #000;
 }
+
 .middle {
   display: block;
   text-align: center;
 }
+
+button,
+input,
+select {
+  color: #000;
+}
+
 #gamebody {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -53,6 +69,7 @@ td {
   -ms-user-select: none;
   user-select: none;
 }
+
 #game1 {
   background-image: url("/assets/BG.png");
   cursor: none;
@@ -60,7 +77,9 @@ td {
   margin: 0 auto;
   position: relative;
 }
-@media screen and (max-width: 700px), screen and (max-device-width: 700px) {
+
+@media screen and (max-width: 700px),
+screen and (max-device-width: 700px) {
   body {
     margin-left: 1%;
     margin-right: 1%;
