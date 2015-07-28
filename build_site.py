@@ -8,7 +8,7 @@ current_date = str(datetime.date.today())
 
 def render_template(template_name):
     template = env.get_template(template_name)
-    text = template.render(current_date=current_date)
+    text = template.render(current_date=current_date) + '\n'
     writing = False
     destination = os.path.join('site', template_name)
     if os.path.exists(destination):
@@ -22,7 +22,7 @@ def render_template(template_name):
         print('Added: ' + template_name)
     if writing:
         with open(destination, 'w', encoding="utf-8") as f:
-            f.write(text + '\n')
+            f.write(text)
 
 
 if __name__ == '__main__':

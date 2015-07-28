@@ -30,7 +30,7 @@ class SiteTestCase(unittest.TestCase):
         for f in self.site_html:
             with self.app.get(f, follow_redirects=True) as resp:
                 self.assertEqual(resp.status_code, 200, f)
-                data = str(resp.get_data())
+                data = resp.get_data(as_text=True)
             self.assertIn('<!DOCTYPE html>', data, f)
             self.assertIn('href="/about.html"', data, f)
             tree = html.fromstring(data)
@@ -51,7 +51,7 @@ class SiteTestCase(unittest.TestCase):
             with self.app.get(page, follow_redirects=True) as resp:
                 self.assertEqual(resp.status_code, 200, page)
                 if page.rsplit('.', 1)[-1] in plain_text:
-                    data = str(resp.get_data())
+                    data = resp.get_data(as_text=True)
                 else:
                     data = None
             if page in unvisited_html:
