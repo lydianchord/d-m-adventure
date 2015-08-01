@@ -1,13 +1,23 @@
 import os
 import re
-import requests
 import unittest
+from eventlet import GreenPool
+from eventlet.green.urllib import request as eventlet_request
 from lxml import html
 
 import local_app
 
 
 class SiteTestCase(unittest.TestCase):
+    
+    def external_assert_status_code_200(self, url):
+        try:
+            with eventlet_request.urlopen(url) as resp:
+                self.assertEqual(resp.getcode(), 200, url)
+        except:
+            print(url)
+            raise
+        return True
     
     @classmethod
     def setUpClass(cls):
@@ -16,6 +26,7 @@ class SiteTestCase(unittest.TestCase):
                             if not x.startswith('_'))
         cls.site_assets = set('/assets/' + x for x in os.listdir(os.path.join(root, 'site', 'assets'))
                               if not x.startswith('_') and not x.endswith('.html'))
+        cls.pool = GreenPool()
     
     def setUp(self):
         local_app.app.config['TESTING'] = True
@@ -33,7 +44,6 @@ class SiteTestCase(unittest.TestCase):
                 data = resp.get_data(as_text=True)
             self.assertIn('<!DOCTYPE html>', data, f)
             self.assertIn('href="/about.html"', data, f)
-            tree = html.fromstring(data)
     
     def test_request_assets(self):
         self.assertGreater(len(self.site_assets), 0)
@@ -58,6 +68,7 @@ class SiteTestCase(unittest.TestCase):
                 unvisited_html.remove(page)
                 tree = html.fromstring(data)
                 links = []
+                external_links = []
                 for result in tree.iterlinks():
                     link = result[2]
                     base_link = link.split('?', 1)[0]
@@ -67,12 +78,14 @@ class SiteTestCase(unittest.TestCase):
                                 visited_external.add(link)
                                 if link[:2] == '//':
                                     link = 'https:' + link
-                                r = requests.head(link, headers={'Connection': 'close'})
-                                self.assertEqual(r.status_code, 200, '%s -> %s' % (page, link))
+                                external_links.append(link)
                             else:
                                 bad_routes.append((page, link))
                     elif base_link in unvisited_html or base_link in unvisited_assets:
                         links.append(base_link)
+                if external_links:
+                    feedback = self.pool.imap(self.external_assert_status_code_200, external_links)
+                    self.assertGreater(len([x for x in feedback]), 0)
                 for link in links:
                     crawl(link)
             elif page in unvisited_assets:

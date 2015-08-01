@@ -59,6 +59,10 @@ td {
   text-align: center;
 }
 
+.spaced {
+  margin-top: 20px;
+}
+
 button,
 input,
 select {
