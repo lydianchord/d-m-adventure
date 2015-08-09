@@ -2,7 +2,7 @@ import os
 import re
 import unittest
 from eventlet import GreenPool
-from eventlet.green.urllib import request as eventlet_request
+from eventlet.green.urllib.request import urlopen
 from lxml import html
 
 import local_app
@@ -12,12 +12,12 @@ class SiteTestCase(unittest.TestCase):
     
     def external_assert_status_code_200(self, url):
         try:
-            with eventlet_request.urlopen(url) as resp:
+            with urlopen(url) as resp:
                 self.assertEqual(resp.getcode(), 200, url)
+            return True
         except:
             print(url)
             raise
-        return True
     
     @classmethod
     def setUpClass(cls):
@@ -85,7 +85,7 @@ class SiteTestCase(unittest.TestCase):
                         links.append(base_link)
                 if external_links:
                     feedback = self.pool.imap(self.external_assert_status_code_200, external_links)
-                    self.assertGreater(len([x for x in feedback]), 0)
+                    self.assertGreater(len([x for x in feedback if x]), 0)
                 for link in links:
                     crawl(link)
             elif page in unvisited_assets:
