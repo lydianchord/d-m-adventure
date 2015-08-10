@@ -85,7 +85,7 @@ class SiteTestCase(unittest.TestCase):
                         links.append(base_link)
                 if external_links:
                     feedback = self.pool.imap(self.external_assert_status_code_200, external_links)
-                    self.assertGreater(len([x for x in feedback if x]), 0)
+                    self.assertEqual(len([x for x in feedback if x]), len(external_links))
                 for link in links:
                     crawl(link)
             elif page in unvisited_assets:
