@@ -10,8 +10,33 @@ try {
       freq: {
         ugen: "flock.ugen.lfNoise",
         freq: 8,
-        mul: 400,
-        add: 200
+        mul: 220,
+        add: 220
+      }
+    },
+    addToEnvironment: false
+  });
+  var bossSynth = flock.synth({
+    synthDef: {
+      ugen: "flock.ugen.lfPulse",
+      width: 0.25,
+      freq: {
+        ugen: "flock.ugen.lfNoise",
+        freq: 4,
+        mul: 22.7817,
+        add: 55
+      },
+      mul: {
+        ugen: "flock.ugen.asr",
+        attack: 0.001,
+        sustain: 0.25,
+        release: 0.1,
+        gate: {
+          ugen: "flock.ugen.impulse",
+          rate: "control",
+          freq: 4,
+          phase: 1.0
+        }
       }
     },
     addToEnvironment: false
@@ -22,7 +47,7 @@ try {
       freq: 2000,
       mul: {
         ugen: "flock.ugen.asr",
-        attack: 0.01,
+        attack: 0.001,
         sustain: 0.25,
         release: 0.5,
         gate: {
@@ -36,16 +61,18 @@ try {
 } catch (e) {
   window.console.info(e);
   var flock = {
-    synth: function (a) {},
+    synth: function (a) {}
   };
   var enviro = {
     start: function () {},
-    stop: function () {},
+    stop: function () {}
   };
   var randomSynth = {
     play: function () {},
     pause: function () {}
   };
+  var bossSynth = randomSynth;
+  var explodeSynthObj = {};
 }
 
 var gameCanvas = document.getElementById("game1");
@@ -272,6 +299,7 @@ function Enemy(isBoss) {
     this.xVelocity = this.speed * Math.sin(this.angle * Math.PI / 180);
     this.yVelocity = this.speed * Math.cos(this.angle * Math.PI / 180);
   } else {
+    randomSynth.pause();
     this.firing = false;
     this.img = gs.bossImg;
     this.maxHealth = 180 + gs.gameAge * 0.025;
@@ -391,6 +419,7 @@ Enemy.prototype.update = function () {
     this.yVelocity = 0;
   }
   if (this.age === 52 && this.isBoss) {
+    bossSynth.play();
     this.yVelocity = 0;
     this.firing = true;
   }
@@ -408,6 +437,10 @@ Enemy.prototype.explode = function () {
     flock.synth(explodeSynthObj);
     this.dying = true;
     this.deathAge = -2;
+    if (this.isBoss) {
+      bossSynth.pause();
+      randomSynth.play();
+    }
   }
 };
 
