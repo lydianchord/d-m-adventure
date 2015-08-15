@@ -1,5 +1,53 @@
 "use strict";
 
+try {
+  var enviro = flock.init();
+  enviro.start();
+  var randomSynth = flock.synth({
+    synthDef: {
+      ugen: "flock.ugen.impulse",
+      mul: 0.25,
+      freq: {
+        ugen: "flock.ugen.lfNoise",
+        freq: 8,
+        mul: 400,
+        add: 200
+      }
+    },
+    addToEnvironment: false
+  });
+  var explodeSynthObj = {
+    synthDef: {
+      ugen: "flock.ugen.lfNoise",
+      freq: 2000,
+      mul: {
+        ugen: "flock.ugen.asr",
+        attack: 0.01,
+        sustain: 0.25,
+        release: 0.5,
+        gate: {
+          ugen: "flock.ugen.inputChangeTrigger",
+          source: 1,
+          duration: 0
+        }
+      }
+    }
+  };
+} catch (e) {
+  window.console.info(e);
+  var flock = {
+    synth: function (a) {},
+  };
+  var enviro = {
+    start: function () {},
+    stop: function () {},
+  };
+  var randomSynth = {
+    play: function () {},
+    pause: function () {}
+  };
+}
+
 var gameCanvas = document.getElementById("game1");
 var context = gameCanvas.getContext("2d");
 context.fillStyle = "rgb(255, 255, 255)";
@@ -357,6 +405,7 @@ Enemy.prototype.update = function () {
 };
 Enemy.prototype.explode = function () {
   if (!this.dying) {
+    flock.synth(explodeSynthObj);
     this.dying = true;
     this.deathAge = -2;
   }
@@ -453,6 +502,8 @@ function runMain() {
     if (pl.score >= 210) {
       document.getElementById("bossdied").style.display = "block";
     }
+    randomSynth.pause();
+    enviro.stop();
     cleanUp();
   }
 }
@@ -474,6 +525,7 @@ function click(e) {
       gs.fireLoop = null;
     }
   } else if (!gs.started) {
+    randomSynth.play();
     gs.playing = true;
     gs.started = true;
     player.score = 0;
