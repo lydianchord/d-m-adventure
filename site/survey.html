@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Survey Time!</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="/assets/jspsych.js"></script>
+    <script src="/assets/jspsych-survey-multi-choice.js"></script>
+    <link href="/assets/jspsych.css" rel="stylesheet" type="text/css"></link>
+    <style>
+      html {
+        color: white;
+        background-color: black;
+      }
+      
+      .jspsych-survey-multi-choice-preamble,
+      .jspsych-survey-multi-choice-question {
+        text-align: center;
+      }
+      
+      #jspsych-survey-multi-choice-next {
+        visibility: hidden;
+      }
+      
+      label.jspsych-survey-multi-choice-text input[type="radio"] {
+        margin: 3px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="jspsych-target"></div>
+    <script>
+      var timeline = [];
+      
+      var allQuestions = [
+        "Yes or no?",
+        "Really?",
+        "Tell the truth.",
+        "What have you done?",
+        "Is this really okay?",
+        "You have no answer, do you?",
+        "You're running out of time.",
+        "How will they ever forgive you?",
+        "What should you have done?",
+        "That can't be right.",
+        "Something seems off.",
+        "They know.",
+        "Be honest."
+      ];
+      
+      allQuestions = jsPsych.randomization.shuffle(allQuestions);
+            
+      for (var i = 0; i < allQuestions.length; i++) {
+        timeline.push({
+          type: "survey-multi-choice",
+          horizontal: true,
+          preamble: "<h3>WORDS WORDS WORDS WORDS</h3>",
+          questions: [allQuestions[i]],
+          options: [["1", "2", "3", "4", "5"]],
+          on_finish: function (trialData) {
+            console.log(trialData);
+          },
+        });
+      }
+      
+      jsPsych.init({
+        timeline: timeline,
+        display_element: $("#jspsych-target"),
+        default_iti: 500,
+        show_progress_bar: true,
+        on_trial_start: function () {
+          var changeSubmit = function () {
+            var submitButton = $("#jspsych-survey-multi-choice-next");
+            if (submitButton.length) {
+              submitButton.prop("value", "Submit Answer").css("visibility", "visible");
+            } else {
+              window.setTimeout(changeSubmit, 10);
+              console.log('...');
+            }
+          };
+          changeSubmit();
+        },
+        on_finish: function () {
+          var updateScreen = function () {
+            var jsPsychTarget = $("#jspsych-target");
+            jsPsychTarget.html(jsPsychTarget.text() + "... ");
+            window.setTimeout(updateScreen, 1000);
+          };
+          updateScreen();
+          $("body").fadeOut({
+            duration: 10000,
+            easing: "linear"
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

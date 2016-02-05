@@ -24,6 +24,7 @@ class SiteTestCase(unittest.TestCase):
         root = local_app.app.root_path
         cls.site_html = set('/' + x for x in os.listdir(os.path.join(root, 'templates'))
                             if not x.startswith('_'))
+        cls.site_html.add('/survey.html')
         cls.site_assets = set('/assets/' + x for x in os.listdir(os.path.join(root, 'site', 'assets'))
                               if not x.startswith('_') and not x.endswith('.html'))
         cls.pool = GreenPool()
@@ -43,7 +44,6 @@ class SiteTestCase(unittest.TestCase):
                 self.assertEqual(resp.status_code, 200, f)
                 data = resp.get_data(as_text=True)
             self.assertIn('<!DOCTYPE html>', data, f)
-            self.assertIn('href="/about.html"', data, f)
     
     def test_request_assets(self):
         self.assertGreater(len(self.site_assets), 0)
